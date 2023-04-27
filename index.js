@@ -86,7 +86,10 @@ function cartItems() {
    Object.keys(cart).forEach(el => {
       
       getData('https://fakestoreapi.com/products/'+el).then(res =>  {
-         document.querySelector('.spinner-border').remove()
+         if(document.querySelector('.spinner-border')) {
+
+            document.querySelector('.spinner-border').remove()
+         }
          const div1 = document.createElement('div');
          div1.classList.add('cart__modal__box__el');
 
@@ -189,7 +192,10 @@ function empty() {
       document.querySelector('.cart__modal__box').appendChild(empty)
       document.querySelector(".empty").textContent = "Siyahi bosdur"
    } else {
-      document.querySelector(".empty").textContent = ""
+      if(document.querySelector(".empty")) {
+         document.querySelector(".empty").textContent = ""
+      }
+
    }
 }
 
