@@ -10,24 +10,23 @@ let cart = localStorage.getItem('cart')
 	? JSON.parse(localStorage.getItem('cart'))
 	: {}
 
-
 let favs = localStorage.getItem('favs')
-? JSON.parse(localStorage.getItem('favs'))
-: []
+	? JSON.parse(localStorage.getItem('favs'))
+	: []
 const wrapper = document.querySelector('.products__wrapper')
 
 function renderItems() {
-   wrapper.innerHTML = ""
-   getData('https://fakestoreapi.com/products').then((products) => {
-	products.forEach((product) => {
-      function con() {
-         if(favs.includes(product.id)) {
-            return `<i onclick='removeWish(${product.id})' class="fa fa-heart active" aria-hidden="true"></i>`
-         } else {
-            return `<i onclick='addWish(${product.id})' data-id=${product.id} class="fa fa-heart " aria-hidden="true"></i>`
-         }
-      }
-		const element = `
+	wrapper.innerHTML = ''
+	getData('https://fakestoreapi.com/products').then((products) => {
+		products.forEach((product) => {
+			function con() {
+				if (favs.includes(product.id)) {
+					return `<i onclick='removeWish(${product.id})' class="fa fa-heart active" aria-hidden="true"></i>`
+				} else {
+					return `<i onclick='addWish(${product.id})' data-id=${product.id} class="fa fa-heart " aria-hidden="true"></i>`
+				}
+			}
+			const element = `
       <div  class="wrapper">
          ${con()}
          <div class="product-img">
@@ -38,7 +37,9 @@ function renderItems() {
             <h1>${product.title}</h1>
             <h2><strong>category</strong>${product.category}</h2>
             <div class="raiting">
-               <div class="rate">raiting: <span>${product.rating.rate}</span></div>
+               <div class="rate">raiting: <span>${
+									product.rating.rate
+								}</span></div>
                <div class="count">
                   rait: 
                   <span> ${product.rating.count}</span>
@@ -48,15 +49,17 @@ function renderItems() {
          </div>
          <div class="product-price-btn">
             <p><span class="price">${product.price}</span>$</p>
-            <button  onclick='addCart(${product.id})' type="button">add cart</button>
+            <button  onclick='addCart(${
+							product.id
+						})' type="button">add cart</button>
          </div>
       
          </div>
       </div>
       `
-		wrapper.insertAdjacentHTML('beforeend', element)
+			wrapper.insertAdjacentHTML('beforeend', element)
+		})
 	})
-})
 }
 
 renderItems()
@@ -75,62 +78,60 @@ function openModal(triggerSel, modalSel, activeClass, exitSel, activatedFunc) {
 	exit.addEventListener('click', () => {
 		modal.classList.remove(activeClass)
 	})
-
 }
 
 openModal('.mycart', '.cart__modal', 'cart__modal_active', '.cart_exit')
-openModal('.mywish', '.whistList__modal', 'whistList__modal__active', '.whistList__modal__exit')
-
+openModal(
+	'.mywish',
+	'.whistList__modal',
+	'whistList__modal__active',
+	'.whistList__modal__exit'
+)
 
 function count() {
-   
-   document.querySelector('.itemsCount').textContent = Object.keys(cart).length + ' items';
+	document.querySelector('.itemsCount').textContent =
+		Object.keys(cart).length + ' items'
 }
 count()
 
 function addCart(id) {
 	if (!cart.hasOwnProperty(id)) {
-		if(confirm("mehsul sebete elave edilsin?")) {
-         cart[id] = 1
-         addStorage('cart', cart)
-         renderCart()
-         count()
-         alert("mehsul elave edildi")
-      }
+		if (confirm('mehsul sebete elave edilsin?')) {
+			cart[id] = 1
+			addStorage('cart', cart)
+			renderCart()
+			count()
+			alert('mehsul elave edildi')
+		}
 	}
-	
 }
 
 function removeFromCart() {
-   document.addEventListener('click', (e) => {
-      if(e.target.classList.contains('delete')) {
-        if(confirm("mehsulu sebetden silmek istediyinizden eminsinizmi?")) {
-         e.target.closest('.cartEl').remove()
-         let id = e.target.getAttribute('data-id');
+	document.addEventListener('click', (e) => {
+		if (e.target.classList.contains('delete')) {
+			if (confirm('mehsulu sebetden silmek istediyinizden eminsinizmi?')) {
+				e.target.closest('.cartEl').remove()
+				let id = e.target.getAttribute('data-id')
 
-         if (cart.hasOwnProperty(id)) {
-           
-            delete cart[id]
-            addStorage('cart', cart)
-            count()
-            empty()
-            alert("mehsul silindi")
-         }
-        }
-       
-      }
-      
-   })
-  
+				if (cart.hasOwnProperty(id)) {
+					delete cart[id]
+					addStorage('cart', cart)
+					count()
+					empty()
+					alert('mehsul silindi')
+				}
+			}
+		}
+	})
 }
 removeFromCart()
 
 function renderCart() {
-   document.querySelector('.cartlist').innerHTML = "";
-   let sum = 0
+	document.querySelector('.cartlist').innerHTML = ''
+	let sum = 0
 	Object.keys(cart).forEach((productId) => {
 		getData('https://fakestoreapi.com/products/' + productId).then((res) => {
-         sum+=res.price
+			sum += res.price
 			const productElem = `
          <div class="cartEl row mb-4 d-flex justify-content-between align-items-center">
          <div class="col-md-2 col-lg-2 col-xl-2">
@@ -147,7 +148,9 @@ function renderCart() {
              <i data-id = ${res.id} class="fas fa-minus"></i>
            </button>
 
-           <input id="form1" min="0" name="quantity" value="${cart[res.id]}" type="text"
+           <input id="form1" min="0" name="quantity" value="${
+							cart[res.id]
+						}" type="text"
              class="form-control quantity form-control-sm" />
 
            <button class="btn btn-link px-2">
@@ -158,24 +161,28 @@ function renderCart() {
            <h6 class="mb-0">€ ${res.price}</h6>
          </div>
          <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-           <div class="text-muted"><i data-id = ${res.id} style="cursor: pointer" class="delete fas fa-times"></i></div>
+           <div class="text-muted"><i data-id = ${
+							res.id
+						} style="cursor: pointer" class="delete fas fa-times"></i></div>
          </div>
        </div>
          `
 
-         document.querySelector('.cartlist').insertAdjacentHTML('beforeend', productElem)
-         document.querySelector('.itemsAll').textContent = 'umumi qiymet: ' + sum + '$'
+			document
+				.querySelector('.cartlist')
+				.insertAdjacentHTML('beforeend', productElem)
+			document.querySelector('.itemsAll').textContent =
+				'umumi qiymet: ' + sum + '$'
 		})
 	})
 }
 renderCart()
 
 function renderFavs() {
-   document.querySelector('.whistList__modal__box').innerHTML = "";
+	document.querySelector('.whistList__modal__box').innerHTML = ''
 
 	favs.forEach((productId) => {
 		getData('https://fakestoreapi.com/products/' + productId).then((res) => {
-
 			const productElem = `
          <div class="cartEl row mb-4 d-flex justify-content-between align-items-center">
          <div class="col-md-2 col-lg-2 col-xl-2">
@@ -197,135 +204,118 @@ function renderFavs() {
        </div>
          `
 
-         document.querySelector('.whistList__modal__box').insertAdjacentHTML('beforeend', productElem)
-        
+			document
+				.querySelector('.whistList__modal__box')
+				.insertAdjacentHTML('beforeend', productElem)
 		})
 	})
-   emptyFav()
+	emptyFav()
 }
 renderFavs()
 
 function increase() {
-   document.addEventListener('click', (e) => {
-      if(e.target.classList.contains('fa-plus')) {
-         let id = e.target.getAttribute('data-id');
-         if (cart.hasOwnProperty(id)) {
-            e.target.closest('.buttons').querySelector('.quantity').value = +e.target.closest('.buttons').querySelector('.quantity').value + 1;
-           
-            cart[id]+=1
-            addStorage('cart', cart)
-            count()
-        
-        
-         }
-       
-      }
-      
-   })
+	document.addEventListener('click', (e) => {
+		if (e.target.classList.contains('fa-plus')) {
+			let id = e.target.getAttribute('data-id')
+			if (cart.hasOwnProperty(id)) {
+				e.target.closest('.buttons').querySelector('.quantity').value =
+					+e.target.closest('.buttons').querySelector('.quantity').value + 1
 
+				cart[id] += 1
+				addStorage('cart', cart)
+				count()
+			}
+		}
+	})
 }
 
 increase()
 
-
 function empty() {
-   if(Object.keys(cart).length<1) {
-      document.querySelector('.itemsCount').textContent = "mehsul yoxdur";
-      document.querySelector('.itemsAll').textContent = ""
-   } 
- 
+	if (Object.keys(cart).length < 1) {
+		document.querySelector('.cart_sup').textContent = ''
+		document.querySelector('.itemsCount').textContent = 'mehsul yoxdur'
+		document.querySelector('.itemsAll').textContent = ''
+	} else {
+		document.querySelector('.cart_sup').textContent = Object.keys(cart).length
+	}
 }
 empty()
 
-
 function emptyFav() {
-   if(favs.length<1) {
-      document.querySelector('.whistList__modal__box__empty').textContent = "mehsul yoxdur";
-   } else {
-      document.querySelector('.whistList__modal__box__empty').textContent = "";
-   }
+	if (favs.length < 1) {
+		document.querySelector('.wish_sup').textContent = ''
+		document.querySelector('.whistList__modal__box__empty').textContent =
+			'mehsul yoxdur'
+	} else {
+		document.querySelector('.whistList__modal__box__empty').textContent = ''
+		document.querySelector('.wish_sup').textContent = favs.length
+	}
 }
 emptyFav()
 function decrase() {
-   document.addEventListener('click', (e) => {
-      if(e.target.classList.contains('fa-minus')) {
-         let id = e.target.getAttribute('data-id');
-         if (cart.hasOwnProperty(id)) {
-            if(+e.target.closest('.buttons').querySelector('.quantity').value > 1) {
-               e.target.closest('.buttons').querySelector('.quantity').value = +e.target.closest('.buttons').querySelector('.quantity').value - 1;
-               cart[id]-=1
-               addStorage('cart', cart)
-               count()
-               
-            }
-
-        
-         }
-       
-      }
-      
-   })
-   
+	document.addEventListener('click', (e) => {
+		if (e.target.classList.contains('fa-minus')) {
+			let id = e.target.getAttribute('data-id')
+			if (cart.hasOwnProperty(id)) {
+				if (
+					+e.target.closest('.buttons').querySelector('.quantity').value > 1
+				) {
+					e.target.closest('.buttons').querySelector('.quantity').value =
+						+e.target.closest('.buttons').querySelector('.quantity').value - 1
+					cart[id] -= 1
+					addStorage('cart', cart)
+					count()
+				}
+			}
+		}
+	})
 }
 
 decrase()
 
-
-
-
-
-
-
-
 function removeFavs() {
-   document.addEventListener('click', (e) => {
-      if(e.target.classList.contains('deletefavs')) {
-        if(confirm("mehsulu favorilerden silmek istediyinizden eminsinizmi?")) {
-         e.target.closest('.cartEl').remove()
-         let id = e.target.getAttribute('data-id');
+	document.addEventListener('click', (e) => {
+		if (e.target.classList.contains('deletefavs')) {
+			if (confirm('mehsulu favorilerden silmek istediyinizden eminsinizmi?')) {
+				e.target.closest('.cartEl').remove()
+				let id = e.target.getAttribute('data-id')
 
-         if (favs.includes(+id)) {
-           
-            favs = favs.filter(el => el != id)
-            addStorage('favs', favs)
-            renderItems()
-            emptyFav()
-            alert("mehsul silindi")
-         }
-        }
-       
-      }
-      
-   })
+				if (favs.includes(+id)) {
+					favs = favs.filter((el) => el != id)
+					addStorage('favs', favs)
+					renderItems()
+					emptyFav()
+					alert('mehsul silindi')
+				}
+			}
+		}
+	})
 }
 removeFavs()
 
-
 function removeWish(id) {
-
-
-      if (favs.includes(+id)) {
-         if(confirm("mehsul favorilerden silinsin?")) {
-            favs = favs.filter(el => el != id)
-            addStorage('favs', favs)
-            renderItems()
-            renderFavs()
-            emptyFav()
-            alert("mehsul silindi")
-         }
-      }
-	
+	if (favs.includes(+id)) {
+		if (confirm('mehsul favorilerden silinsin?')) {
+			favs = favs.filter((el) => el != id)
+			addStorage('favs', favs)
+			renderItems()
+			renderFavs()
+			emptyFav()
+			alert('mehsul silindi')
+		}
+	}
 }
 
 function addWish(id) {
-   if (!favs.includes(id)) {
-		if(confirm("mehsul favorilere elave edilsin?")) {
-         favs.push(id)
-         addStorage('favs', favs)
-         renderFavs()
-         renderItems()
-         alert("mehsul elave edildi")
-         document.querySelector("")
-      }
+	if (!favs.includes(id)) {
+		if (confirm('mehsul favorilere elave edilsin?')) {
+			favs.push(id)
+			addStorage('favs', favs)
+			renderFavs()
+			renderItems()
+			alert('mehsul elave edildi')
+			document.querySelector('')
+		}
 	}
 }
