@@ -9,12 +9,27 @@ const getData = async (url) => {
 let cart = localStorage.getItem('cart')
 	? JSON.parse(localStorage.getItem('cart'))
 	: {}
+
+
+let favs = localStorage.getItem('favs')
+? JSON.parse(localStorage.getItem('favs'))
+: []
 const wrapper = document.querySelector('.products__wrapper')
 
-getData('https://fakestoreapi.com/products').then((products) => {
+function renderItems() {
+   wrapper.innerHTML = ""
+   getData('https://fakestoreapi.com/products').then((products) => {
 	products.forEach((product) => {
+      function con() {
+         if(favs.includes(product.id)) {
+            return `<i onclick='removeWish(${product.id})' class="fa fa-heart active" aria-hidden="true"></i>`
+         } else {
+            return `<i onclick='addWish(${product.id})' data-id=${product.id} class="fa fa-heart " aria-hidden="true"></i>`
+         }
+      }
 		const element = `
-      <div class="wrapper">
+      <div  class="wrapper">
+         ${con()}
          <div class="product-img">
          <img src="${product.image}" height="420" width="327">
          </div>
@@ -35,12 +50,16 @@ getData('https://fakestoreapi.com/products').then((products) => {
             <p><span class="price">${product.price}</span>$</p>
             <button  onclick='addCart(${product.id})' type="button">add cart</button>
          </div>
+      
          </div>
       </div>
       `
 		wrapper.insertAdjacentHTML('beforeend', element)
 	})
 })
+}
+
+renderItems()
 
 function addStorage(store, data) {
 	localStorage.setItem(store, JSON.stringify(data))
@@ -60,7 +79,7 @@ function openModal(triggerSel, modalSel, activeClass, exitSel, activatedFunc) {
 }
 
 openModal('.mycart', '.cart__modal', 'cart__modal_active', '.cart_exit')
-
+openModal('.mywish', '.whistList__modal', 'whistList__modal__active', '.whistList__modal__exit')
 
 
 function count() {
@@ -151,8 +170,40 @@ function renderCart() {
 }
 renderCart()
 
+function renderFavs() {
+   document.querySelector('.whistList__modal__box').innerHTML = "";
 
+	favs.forEach((productId) => {
+		getData('https://fakestoreapi.com/products/' + productId).then((res) => {
 
+			const productElem = `
+         <div class="cartEl row mb-4 d-flex justify-content-between align-items-center">
+         <div class="col-md-2 col-lg-2 col-xl-2">
+           <img
+             src="${res.image}"
+             class="img-fluid rounded-3" alt="Cotton T-shirt">
+         </div>
+         <div class="col-md-3 col-lg-3 col-xl-3">
+           <h6 class="text-muted">${res.category}</h6>
+           <h6 class="text-black mb-0">${res.title}</h6>
+         </div>
+      
+         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+           <h6 class="mb-0">€ ${res.price}</h6>
+         </div>
+         <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+           <div class="text-muted"><i data-id = ${res.id} style="cursor: pointer" class="deletefavs fas fa-times"></i></div>
+         </div>
+       </div>
+         `
+
+         document.querySelector('.whistList__modal__box').insertAdjacentHTML('beforeend', productElem)
+        
+		})
+	})
+   emptyFav()
+}
+renderFavs()
 
 function increase() {
    document.addEventListener('click', (e) => {
@@ -186,6 +237,15 @@ function empty() {
 }
 empty()
 
+
+function emptyFav() {
+   if(favs.length<1) {
+      document.querySelector('.whistList__modal__box__empty').textContent = "mehsul yoxdur";
+   } else {
+      document.querySelector('.whistList__modal__box__empty').textContent = "";
+   }
+}
+emptyFav()
 function decrase() {
    document.addEventListener('click', (e) => {
       if(e.target.classList.contains('fa-minus')) {
@@ -209,3 +269,63 @@ function decrase() {
 }
 
 decrase()
+
+
+
+
+
+
+
+
+function removeFavs() {
+   document.addEventListener('click', (e) => {
+      if(e.target.classList.contains('deletefavs')) {
+        if(confirm("mehsulu favorilerden silmek istediyinizden eminsinizmi?")) {
+         e.target.closest('.cartEl').remove()
+         let id = e.target.getAttribute('data-id');
+
+         if (favs.includes(+id)) {
+           
+            favs = favs.filter(el => el != id)
+            addStorage('favs', favs)
+            renderItems()
+            emptyFav()
+            alert("mehsul silindi")
+         }
+        }
+       
+      }
+      
+   })
+}
+removeFavs()
+
+
+function removeWish(id) {
+
+
+      if (favs.includes(+id)) {
+         if(confirm("mehsul favorilerden silinsin?")) {
+            favs = favs.filter(el => el != id)
+            addStorage('favs', favs)
+            renderItems()
+            renderFavs()
+            emptyFav()
+            alert("mehsul silindi")
+         }
+      }
+	
+}
+
+function addWish(id) {
+   if (!favs.includes(id)) {
+		if(confirm("mehsul favorilere elave edilsin?")) {
+         favs.push(id)
+         addStorage('favs', favs)
+         renderFavs()
+         renderItems()
+         alert("mehsul elave edildi")
+         document.querySelector("")
+      }
+	}
+}
