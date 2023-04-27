@@ -101,6 +101,7 @@ function addCart(id) {
 			addStorage('cart', cart)
 			renderCart()
 			count()
+         empty()
 			alert('mehsul elave edildi')
 		}
 	}
