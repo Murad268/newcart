@@ -159,6 +159,7 @@
   opacity: 1;
 }
  .cart__modal__box {
+    position: relative;
      background-color: white;
      width: 800px;
      height: 500px;
@@ -228,4 +229,12 @@
 
  .delete {
   cursor: pointer;
+ }
+
+ .all_price {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-weight: bold;
+  font-size: 30px;
  }

@@ -75,11 +75,18 @@ openModal('.mycart', '.cart__modal', 'cart__modal_active', '.cart_exit', cartIte
 function cartItems() {
    document.querySelector(".cart__modal__box").innerHTML = ''
    let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
-  
+   let sum = 0
+   let spinner = 
+      `
+      <div class="spinner-border" role="status">
+         <span class="visually-hidden">Loading...</span>
+      </div>
+      `
+      document.querySelector('.cart__modal__box').insertAdjacentHTML('beforeend', spinner)
    Object.keys(cart).forEach(el => {
-
+      
       getData('https://fakestoreapi.com/products/'+el).then(res =>  {
-
+         document.querySelector('.spinner-border').remove()
          const div1 = document.createElement('div');
          div1.classList.add('cart__modal__box__el');
 
@@ -113,14 +120,18 @@ function cartItems() {
             e.target.parentElement.remove()
             deleteFromCart(res.id)
          })
-      
-        
+         sum += +res.price
+        div9 = document.createElement('div');
+        div9.classList.add("all_price");
+       
        
          div1.appendChild(div2);
          div1.appendChild(div3);
   
          div1.appendChild(div8)
+         div1.appendChild(div9)
          document.querySelector('.cart__modal__box').appendChild(div1)
+         document.querySelector('.all_price').textContent = sum+" $"
       });   
    })
    empty()
