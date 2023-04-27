@@ -108,8 +108,10 @@ removeFromCart()
 
 function renderCart() {
    document.querySelector('.cartlist').innerHTML = "";
+   let sum = 0
 	Object.keys(cart).forEach((productId) => {
 		getData('https://fakestoreapi.com/products/' + productId).then((res) => {
+         sum+=res.price
 			const productElem = `
          <div class="cartEl row mb-4 d-flex justify-content-between align-items-center">
          <div class="col-md-2 col-lg-2 col-xl-2">
@@ -143,10 +145,12 @@ function renderCart() {
          `
 
          document.querySelector('.cartlist').insertAdjacentHTML('beforeend', productElem)
+         document.querySelector('.itemsAll').textContent = 'umumi qiymet: ' + sum + '$'
 		})
 	})
 }
 renderCart()
+
 
 
 
@@ -174,7 +178,11 @@ increase()
 
 
 function empty() {
-   document.querySelector('.itemsCount').textContent = "mehsul yoxdur";
+   if(Object.keys(cart).length<1) {
+      document.querySelector('.itemsCount').textContent = "mehsul yoxdur";
+      document.querySelector('.itemsAll').textContent = ""
+   } 
+ 
 }
 empty()
 

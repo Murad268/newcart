@@ -177,7 +177,10 @@
 input {
   width: 50px !important;
 }
-
+.itemsAll {
+  font-weight: bold;
+  font-size: 18px;
+}
 
 
 
