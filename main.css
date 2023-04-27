@@ -159,12 +159,13 @@
   opacity: 1;
 }
  .cart__modal__box {
+
     position: relative;
      background-color: white;
      width: 800px;
-     height: 500px;
+      height: 600px ;
      overflow: scroll !important;
-     padding: 20px 20px 0px 20px;
+     padding: 90px 20px 0px 20px;
      border-radius: 10px;
  }
 
@@ -178,7 +179,7 @@
  }
 
  .cart__modal__box__el {
-  justify-content: space-between;
+  column-gap: 20px;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   display: flex;
@@ -229,12 +230,13 @@
 
  .delete {
   cursor: pointer;
+  
  }
 
  .all_price {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  top:0px;
+  right: 10px;
   font-weight: bold;
   font-size: 30px;
  }

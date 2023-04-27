@@ -65,6 +65,7 @@ function openModal(triggerSel, modalSel, activeClass, exitSel, activatedFunc) {
       modal.classList.remove(activeClass)
    })
    empty()
+ 
 }
 
 openModal('.mycart', '.cart__modal', 'cart__modal_active', '.cart_exit', cartItems);
@@ -76,20 +77,11 @@ function cartItems() {
    document.querySelector(".cart__modal__box").innerHTML = ''
    let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
    let sum = 0
-   let spinner = 
-      `
-      <div class="spinner-border" role="status">
-         <span class="visually-hidden">Loading...</span>
-      </div>
-      `
-      document.querySelector('.cart__modal__box').insertAdjacentHTML('beforeend', spinner)
+ 
    Object.keys(cart).forEach(el => {
       
       getData('https://fakestoreapi.com/products/'+el).then(res =>  {
-         if(document.querySelector('.spinner-border')) {
-
-            document.querySelector('.spinner-border').remove()
-         }
+     
          const div1 = document.createElement('div');
          div1.classList.add('cart__modal__box__el');
 
@@ -134,7 +126,7 @@ function cartItems() {
          div1.appendChild(div8)
          div1.appendChild(div9)
          document.querySelector('.cart__modal__box').appendChild(div1)
-         document.querySelector('.all_price').textContent = sum+" $"
+         document.querySelector('.all_price').textContent = 'umimi qiymet: ' + sum+" $"
       });   
    })
    empty()
@@ -183,7 +175,7 @@ function deleteFromCart(id) {
 
 
 function empty() {
-   
+  
   
    let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
    if(Object.keys(cart).length < 1) {
@@ -195,7 +187,7 @@ function empty() {
       if(document.querySelector(".empty")) {
          document.querySelector(".empty").textContent = ""
       }
-
+     
    }
 }
 
