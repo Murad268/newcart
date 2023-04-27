@@ -1,18 +1,19 @@
 const getData = async (url) => {
-   const data = await fetch(url);
-   if(!data.ok) {
-      console.error ("Error")
-   } 
-   return await data.json();
+	const data = await fetch(url)
+	if (!data.ok) {
+		console.error('Error')
+	}
+	return await data.json()
 }
 
+let cart = localStorage.getItem('cart')
+	? JSON.parse(localStorage.getItem('cart'))
+	: {}
+const wrapper = document.querySelector('.products__wrapper')
 
-
-const wrapper = document.querySelector('.products__wrapper');
-getData('https://fakestoreapi.com/products').then(products => {
-   products.forEach(product => {
-      const element = 
-      `
+getData('https://fakestoreapi.com/products').then((products) => {
+	products.forEach((product) => {
+		const element = `
       <div class="wrapper">
          <div class="product-img">
          <img src="${product.image}" height="420" width="327">
@@ -32,114 +33,139 @@ getData('https://fakestoreapi.com/products').then(products => {
          </div>
          <div class="product-price-btn">
             <p><span class="price">${product.price}</span>$</p>
-            <button onclick='addCart(${product.id})' type="button">add cart</button>
+            <button  onclick='addCart(${product.id})' type="button">add cart</button>
          </div>
          </div>
       </div>
       `
-      wrapper.insertAdjacentHTML("beforeend", element)
-   })
+		wrapper.insertAdjacentHTML('beforeend', element)
+	})
 })
 
-
-function addCart(id) {
-  
-   let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
-   if(!cart.hasOwnProperty(id)) {
-      alert("elave edildi")
-      cart[id] = 1
-   }
-   localStorage.setItem('cart', JSON.stringify(cart));
-   empty()
+function addStorage(store, data) {
+	localStorage.setItem(store, JSON.stringify(data))
 }
 
 function openModal(triggerSel, modalSel, activeClass, exitSel, activatedFunc) {
-   const trigger = document.querySelector(triggerSel);
-   const modal = document.querySelector(modalSel);
-   const exit = document.querySelector(exitSel);
-   trigger.addEventListener('click', () => {
-      modal.classList.add(activeClass)
-      activatedFunc()
-   })
-   exit.addEventListener('click', () => {
-      modal.classList.remove(activeClass)
-   })
-   empty()
- 
+	const trigger = document.querySelector(triggerSel)
+	const modal = document.querySelector(modalSel)
+	const exit = document.querySelector(exitSel)
+	trigger.addEventListener('click', () => {
+		modal.classList.add(activeClass)
+	})
+	exit.addEventListener('click', () => {
+		modal.classList.remove(activeClass)
+	})
+
 }
 
-openModal('.mycart', '.cart__modal', 'cart__modal_active', '.cart_exit', cartItems);
+openModal('.mycart', '.cart__modal', 'cart__modal_active', '.cart_exit')
 
 
 
+function count() {
+   
+   document.querySelector('.itemsCount').textContent = Object.keys(cart).length + ' items';
+}
+count()
 
-function cartItems() {
-   document.querySelector(".cart__modal__box").innerHTML = ''
-   let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
-   let sum = 0
- 
-   Object.keys(cart).forEach(el => {
+function addCart(id) {
+	if (!cart.hasOwnProperty(id)) {
+		if(confirm("mehsul sebete elave edilsin?")) {
+         cart[id] = 1
+         addStorage('cart', cart)
+         renderCart()
+         count()
+         alert("mehsul elave edildi")
+      }
+	}
+	
+}
+
+function removeFromCart() {
+   document.addEventListener('click', (e) => {
+      if(e.target.classList.contains('delete')) {
+        if(confirm("mehsulu sebetden silmek istediyinizden eminsinizmi?")) {
+         e.target.closest('.cartEl').remove()
+         let id = e.target.getAttribute('data-id');
+
+         if (cart.hasOwnProperty(id)) {
+           
+            delete cart[id]
+            addStorage('cart', cart)
+            count()
+            empty()
+            alert("mehsul silindi")
+         }
+        }
+       
+      }
       
-      getData('https://fakestoreapi.com/products/'+el).then(res =>  {
-     
-         const div1 = document.createElement('div');
-         div1.classList.add('cart__modal__box__el');
-
-
-         const div2 = document.createElement('div');
-         div2.classList.add('cart__modal__box__el__img');
-
-         const img = document.createElement('img');
-         img.src = res.image;
-         img.alt = '';
-
-
-         div2.appendChild(img);
-
-
-         const div3 = document.createElement('div');
-         div3.classList.add('cart__modal__box__el__name');
-         div3.textContent = res.title;
-
-
-         
-
-
-         const div7 = document.createElement('div');
-         div7.classList.add('cart__modal__box__el__minus');
-         div7.textContent = '-';
-         const div8 = document.createElement('div');
-         div7.classList.add('delete');
-         div8.textContent = 'delete'
-         div8.addEventListener('click', (e) => {
-            e.target.parentElement.remove()
-            deleteFromCart(res.id)
-         })
-         sum += +res.price
-        div9 = document.createElement('div');
-        div9.classList.add("all_price");
-       
-       
-         div1.appendChild(div2);
-         div1.appendChild(div3);
-  
-         div1.appendChild(div8)
-         div1.appendChild(div9)
-         document.querySelector('.cart__modal__box').appendChild(div1)
-         document.querySelector('.all_price').textContent = 'umimi qiymet: ' + sum+" $"
-      });   
    })
-   empty()
+  
 }
+removeFromCart()
 
+function renderCart() {
+   document.querySelector('.cartlist').innerHTML = "";
+	Object.keys(cart).forEach((productId) => {
+		getData('https://fakestoreapi.com/products/' + productId).then((res) => {
+			const productElem = `
+         <div class="cartEl row mb-4 d-flex justify-content-between align-items-center">
+         <div class="col-md-2 col-lg-2 col-xl-2">
+           <img
+             src="${res.image}"
+             class="img-fluid rounded-3" alt="Cotton T-shirt">
+         </div>
+         <div class="col-md-3 col-lg-3 col-xl-3">
+           <h6 class="text-muted">${res.category}</h6>
+           <h6 class="text-black mb-0">${res.title}</h6>
+         </div>
+         <div class="buttons col-md-3 col-lg-3 col-xl-2 d-flex">
+           <button class="btn btn-link px-2">
+             <i data-id = ${res.id} class="fas fa-minus"></i>
+           </button>
+
+           <input id="form1" min="0" name="quantity" value="${cart[res.id]}" type="text"
+             class="form-control quantity form-control-sm" />
+
+           <button class="btn btn-link px-2">
+             <i data-id = ${res.id} class="fas fa-plus"></i>
+           </button>
+         </div>
+         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+           <h6 class="mb-0">€ ${res.price}</h6>
+         </div>
+         <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+           <div class="text-muted"><i data-id = ${res.id} style="cursor: pointer" class="delete fas fa-times"></i></div>
+         </div>
+       </div>
+         `
+
+         document.querySelector('.cartlist').insertAdjacentHTML('beforeend', productElem)
+		})
+	})
+}
+renderCart()
 
 
 
 function increase() {
    document.addEventListener('click', (e) => {
-      if(e.target.classList.contains('cart__modal__box__el__plus')) {
-         e.target.parentElement.querySelector('.cart__modal__box__el__cur').textContent = +e.target.parentElement.querySelector('.cart__modal__box__el__cur').textContent + 1
+      if(e.target.classList.contains('fa-plus')) {
+         let id = e.target.getAttribute('data-id');
+         if (cart.hasOwnProperty(id)) {
+            e.target.closest('.buttons').querySelector('.quantity').value = +e.target.closest('.buttons').querySelector('.quantity').value + 1;
+           
+            cart[id]+=1
+            addStorage('cart', cart)
+            count()
+        
+        
+         }
+       
       }
+      
    })
 
 }
@@ -147,48 +173,31 @@ function increase() {
 increase()
 
 
-
-function decrease() {
-   document.addEventListener('click', (e) => {
-      if(e.target.classList.contains('cart__modal__box__el__minus')) {
-         if( +e.target.parentElement.querySelector('.cart__modal__box__el__cur').textContent > 0) {
-            e.target.parentElement.querySelector('.cart__modal__box__el__cur').textContent = +e.target.parentElement.querySelector('.cart__modal__box__el__cur').textContent - 1
-         }
-        
-      }
-   })
-}
-
-decrease()
-
-
-function deleteFromCart(id) {
-  
-   let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
-   
-      delete cart[id]
-  
-   localStorage.setItem('cart', JSON.stringify(cart));
-    alert('silindi')
-   empty()
-}
-
-
 function empty() {
-  
-  
-   let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
-   if(Object.keys(cart).length < 1) {
-      let empty = document.createElement('div');
-      empty.classList.add('empty');
-      document.querySelector('.cart__modal__box').appendChild(empty)
-      document.querySelector(".empty").textContent = "Siyahi bosdur"
-   } else {
-      if(document.querySelector(".empty")) {
-         document.querySelector(".empty").textContent = ""
+   document.querySelector('.itemsCount').textContent = "mehsul yoxdur";
+}
+empty()
+
+function decrase() {
+   document.addEventListener('click', (e) => {
+      if(e.target.classList.contains('fa-minus')) {
+         let id = e.target.getAttribute('data-id');
+         if (cart.hasOwnProperty(id)) {
+            if(+e.target.closest('.buttons').querySelector('.quantity').value > 1) {
+               e.target.closest('.buttons').querySelector('.quantity').value = +e.target.closest('.buttons').querySelector('.quantity').value - 1;
+               cart[id]-=1
+               addStorage('cart', cart)
+               count()
+               
+            }
+
+        
+         }
+       
       }
-     
-   }
+      
+   })
+   
 }
 
-empty()
+decrase()

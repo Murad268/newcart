@@ -39,7 +39,7 @@
    font-size: 20px;
    color: #474747;
  }
- 
+
  .product-text h1,
  .product-price-btn p {
    font-family: 'Bentham', serif;
@@ -158,16 +158,7 @@
   visibility: visible;
   opacity: 1;
 }
- .cart__modal__box {
 
-    position: relative;
-     background-color: white;
-     width: 800px;
-      height: 600px ;
-     overflow: scroll !important;
-     padding: 90px 20px 0px 20px;
-     border-radius: 10px;
- }
 
  .cart_exit {
   cursor: pointer;
@@ -178,65 +169,19 @@
   color: red
  }
 
- .cart__modal__box__el {
-  column-gap: 20px;
-  border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  margin-bottom: 20px;
- }
+.card {
+  overflow-y: scroll;
+  width: 800px;
+}
 
- .cart__modal__box__el__img {
-  width: 100px;
-  height: 80px;
-  margin-right: 20px;
+input {
+  width: 50px !important;
+}
 
- }
 
- .cart__modal__box__el__img img {
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
- }
 
- .cart__modal__box__el__name {
-  font-size: 30px;
-  font-weight: bold;
- }
 
- .cart__modal__box__el__countes {
-  display: flex;
-  align-items: center;
- }
 
- .cart__modal__box__el__countes div {
-  color: green;
-  font-size: 30px;
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color:aqua;
-  border-radius: 5px
- }
 
- .cart__modal__box__el__cur {
-  background-color: white !important
- }
 
- .delete {
-  cursor: pointer;
-  
- }
 
- .all_price {
-  position: absolute;
-  top:0px;
-  right: 10px;
-  font-weight: bold;
-  font-size: 30px;
- }
